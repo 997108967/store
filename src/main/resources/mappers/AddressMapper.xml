@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="cn.tedu.store.mapper.AddressMapper">
+	
+	<!-- 添加收货地址  -->
+	<!--Integer addnew(Address address) -->
+	<insert id="addnew">
+		insert into 
+			t_address(
+				uid,
+				name,
+				province,
+				city,
+				area,
+				district,
+				address,
+				phone,
+				tel,
+				zip,
+				tag,
+				is_default,
+				created_user,
+				created_time,
+				modified_user,
+				modified_time
+			) values(
+				#{uid},
+				#{name},
+				#{province},
+				#{city},
+				#{area},
+				#{district},
+				#{address},
+				#{phone},
+				#{tel},
+				#{zip},
+				#{tag},
+				#{isDefault},
+				#{createdUser},
+				#{createdTime},
+				#{modifiedUser},
+				#{modifiedTime}
+			)
+	</insert>
+	
+	<!-- 根据用户ID查询该用户是否存在收货地址 -->
+	<!-- Integer findCountByUid(Integer uid) -->
+	<select id="findCountByUid" resultType="java.lang.Integer">
+		select 
+			count(id)
+		from
+			t_address
+		where
+			uid=#{uid}
+	</select>
+	
+	<!-- 查询该用户收货地址 -->
+	<!-- List<Address> findAddressByUid(Integer id) -->
+	<select id="findAddressByUid" resultType="cn.tedu.store.entity.Address">
+		select 
+			id,
+			name,
+			phone,
+			district,
+			address,
+			tag,
+			is_default AS isDefault
+		from
+			t_address
+		where
+			uid=#{id}
+		order by
+			is_default desc,
+			modified_time desc
+	</select>
+	
+	
+	<!--将指定用户的默认地址全部设置为0(全都不默认)  -->
+	<!-- Integer updateNonDefault(Integer uid) -->
+	<update id="updateNonDefault">
+		update
+			t_address
+		set
+			is_default=0		
+		where
+			uid=#{uid}
+	</update>
+	
+	<!--将指定地址设置未默认地址 -->
+	<!--Integer updateDefault(Integer id,String username,Date date)  -->
+	<update id="updateDefault">
+		update 
+			t_address
+		set
+			is_default=1,
+			modified_user=#{username},
+			modified_time=#{date}
+		where
+			id=#{id}
+	</update>
+	
+	<!-- 根据ID查询收获地址 -->
+	<!-- Address findById(Integer id) -->
+	<select id="findById" resultType="cn.tedu.store.entity.Address">
+		select
+			uid,
+			is_default AS isDefault
+		from
+			t_address
+		where
+			id=#{id}
+	</select>
+	<!-- 删除指定的收货地址（根据ID） -->
+	<!--  Integer deleteById(Integer id)-->
+	<delete id="deleteById">
+		delete from
+			t_address
+		where
+			id=#{id}
+	</delete>
+	
+	<!-- 查询最后修改的收获地址 -->
+	<!-- Address findLastModified(Integer uid) -->
+	<select id="findLastModified" resultType="cn.tedu.store.entity.Address">
+		select
+			id
+		from
+			t_address
+		where
+			uid=#{uid} 
+		order by
+			modified_time desc
+		limit
+			1
+	</select>
+</mapper>

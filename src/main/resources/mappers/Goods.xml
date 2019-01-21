@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="cn.tedu.store.mapper.GoodsMapper">
+	
+	
+	<!-- 查找该分类下的所有商品 -->
+	<!--List<Goods> findByCategoryId(@Param("categoryId")Integer categoryId,@Param("offset")Integer offset,@Param("count")Integer count)  -->
+	<select id="findByCategoryId" resultType="cn.tedu.store.entity.Goods">
+		select
+			id,
+			title,
+			sell_point AS sellPoint,
+			price,
+			image
+		from
+			t_goods
+		where
+			category_id=#{categoryId}
+		order by
+			priority desc
+		limit
+			#{offset},#{count} 
+	</select>
+	
+	<!-- 获取指定商品的信息 -->
+	<!-- Goods findById(Integer id) -->
+	<select id="findById" resultType="cn.tedu.store.entity.Goods">
+		select
+			id,
+			category_id AS categoryId,
+			item_type AS itemType,
+			title,
+			sell_point AS sellPoint,
+			price,
+			num,
+			barcode,
+			image,
+			status,
+			priority
+		from
+			t_goods
+		where
+			id=#{id}
+	</select>
+	
+	<!--	获取优先级较高的N条数据  -->
+	<!--  List<Goods> findByPriority(Integer count)-->
+	<select id="findByPriority" resultType="cn.tedu.store.entity.Goods">
+		select
+			id,
+			title,
+			price,
+			image
+		from
+			t_goods
+		where
+			status=1 and num>0
+		order by
+			priority desc
+		limit 0,#{count}
+	</select>
+</mapper>
